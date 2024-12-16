@@ -8,9 +8,9 @@ template <typename T>
 struct Node {
     int apartmentNumber; 
     T tenantName;       
-    Node* next;
+    Node* prev;
 
-    Node(int number, const T& name) : apartmentNumber(number), tenantName(name), next(nullptr) {}
+ Node(int number, const T& name) : apartmentNumber(number), tenantName(name), next(nullptr), prev(nullptr) {}
 };
 
 template <typename T>
@@ -87,15 +87,16 @@ public:
     }
 
     // Метод для добавления жильца в начало списка
-    void push_head(int apartmentNumber, const T& tenantName) {
-        Node<T>* newNode = new Node<T>(apartmentNumber, tenantName);
-        newNode->next = head;
-        head = newNode;
-        if (!tail) { 
-            tail = newNode;
-        }
-        size++;
-    }
+ void push_head(int apartmentNumber, const T& tenantName) {
+     Node<T>* newNode = new Node<T>(apartmentNumber, tenantName);
+     newNode->next = head;
+     head->prev = newNode;
+     head= newNode;
+    if (!tail) {
+         tail = newNode;
+     }
+     size++;
+ }
 
     // Перегруженный метод для добавления другого списка в начало
     void push_head(const ApartmentList& other) {
