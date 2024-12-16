@@ -251,7 +251,7 @@ int main() {
     std::cout << apartments << std::endl;
     
     std::cout << apartments << std::endl;
-    apartments.delete_node("Tenant1");
+   apartments.delete_node("staryy");
     std::cout << apartments << std::endl;
 
     std::cout << "Current size: " << apartments.get_size() << std::endl;
