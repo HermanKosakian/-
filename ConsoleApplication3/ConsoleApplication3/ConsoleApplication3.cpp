@@ -33,15 +33,15 @@ public:
         }
     }
 
-    // Конструктор, создающий список с количеством квартир и случайными значениями
-    ApartmentList(size_t count, double min_value, double max_value) : head(nullptr), tail(nullptr), size(0) {
-        std::mt19937 gen(42); // Фиксированное значение для генератора случайных чисел
-        std::uniform_real_distribution<double> dis(min_value, max_value); // Распределение для генерации случайных значений в заданном диапазоне
+    
+    ApartmentList(size_t count, double min_value, double max_value, int v) : head(nullptr), tail(nullptr), size(0) {
+        std::mt19937 gen(v); 
+        std::uniform_real_distribution<double> dis(min_value, max_value); 
 
         for (size_t i = 0; i < count; ++i) {
-            int apartmentNumber = static_cast<int>(i + 1); // Номера квартир
-            T tenantName = "Tenant " + std::to_string(dis(gen)); // Генерация имени арендатора с случайным значением
-            push_tail(apartmentNumber, tenantName); // Добавление квартиры в список
+            int apartmentNumber = static_cast<int>(i + 1); 
+            T tenantName = "Tenant " + std::to_string(dis(gen));
+            push_tail(apartmentNumber, tenantName); 
         }
     }
 
@@ -232,8 +232,8 @@ public:
 };
 
 int main() {
-    ApartmentList<std::string> apartments(5, 101, 202);
-    ApartmentList<std::string> apar(5, 303, 404);
+    ApartmentList<std::string> apartments(5, 101, 202,42);
+    ApartmentList<std::string> apar(5, 303, 404,42);
     std::cout << apartments << std::endl;
     std::cout << apar << std::endl;
     
