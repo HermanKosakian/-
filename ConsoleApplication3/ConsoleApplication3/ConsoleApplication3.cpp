@@ -89,7 +89,7 @@ public:
     // Метод для добавления жильца в начало списка
     void push_head(int apartmentNumber, const T& tenantName) {
         Node<T>* newNode = new Node<T>(apartmentNumber, tenantName);
- 
+        newNode->next = head;
         head = newNode;
         if (!tail) { 
             tail = newNode;
