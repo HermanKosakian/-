@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <cstdlib>
 #include <stdexcept>
 #include <string>
@@ -6,19 +6,20 @@
 
 template <typename T>
 struct Node {
-    int apartmentNumber; 
-    T tenantName;       
+    int apartmentNumber;
+    T tenantName;
+    Node* next;
     Node* prev;
 
- Node(int number, const T& name) : apartmentNumber(number), tenantName(name), next(nullptr), prev(nullptr) {}
+    Node(int number, const T& name) : apartmentNumber(number), tenantName(name), next(nullptr), prev(nullptr) {}
 };
 
 template <typename T>
 class ApartmentList {
 private:
-    Node<T>* head; 
-    Node<T>* tail; 
-    size_t size;   
+    Node<T>* head;
+    Node<T>* tail;
+    size_t size;
 
 public:
     // Конструктор по умолчанию
@@ -33,15 +34,15 @@ public:
         }
     }
 
-    
+
     ApartmentList(size_t count, double min_value, double max_value, int v) : head(nullptr), tail(nullptr), size(0) {
-        std::mt19937 gen(v); 
-        std::uniform_real_distribution<double> dis(min_value, max_value); 
+        std::mt19937 gen(v);
+        std::uniform_real_distribution<double> dis(min_value, max_value);
 
         for (size_t i = 0; i < count; ++i) {
-            int apartmentNumber = static_cast<int>(i + 1); 
+            int apartmentNumber = static_cast<int>(i + 1);
             T tenantName = "Tenant " + std::to_string(dis(gen));
-            push_tail(apartmentNumber, tenantName); 
+            push_tail(apartmentNumber, tenantName);
         }
     }
 
@@ -53,7 +54,7 @@ public:
     // Операция присваивания
     ApartmentList& operator=(const ApartmentList& other) {
         if (this != &other) {
-            clear(); 
+            clear();
             Node<T>* current = other.head;
             while (current) {
                 push_tail(current->apartmentNumber, current->tenantName);
@@ -87,23 +88,24 @@ public:
     }
 
     // Метод для добавления жильца в начало списка
- void push_head(int apartmentNumber, const T& tenantName) {
-     Node<T>* newNode = new Node<T>(apartmentNumber, tenantName);
-     newNode->next = head;
-     head->prev = newNode;
-     head= newNode;
-    if (!tail) {
-         tail = newNode;
-     }
-     size++;
- }
+    void push_head(int apartmentNumber, const T& tenantName) {
+        Node<T>* newNode = new Node<T>(apartmentNumber, tenantName);
+        newNode->next = head;
+        head->prev = newNode;
+        head= newNode;
+       if (!tail) {
+            tail = newNode;
+        }
+        size++;
+    }
 
     // Перегруженный метод для добавления другого списка в начало
     void push_head(const ApartmentList& other) {
-        Node<T>* current = other.head;
+        Node<T>* current = other.tail;
+        std::cout << current->apartmentNumber<< current->tenantName << std::endl;
         while (current) {
             push_head(current->apartmentNumber, current->tenantName);
-            current = current->next;
+            current = current->prev;
         }
     }
 
@@ -116,7 +118,7 @@ public:
         head = head->next;
         delete temp;
         size--;
-        if (!head) { 
+        if (!head) {
             tail = nullptr;
         }
     }
@@ -126,7 +128,7 @@ public:
         if (!head) {
             throw std::runtime_error("List is empty");
         }
-        if (head == tail) { 
+        if (head == tail) {
             delete head;
             head = nullptr;
             tail = nullptr;
@@ -151,15 +153,15 @@ public:
             if (current->tenantName == tenantName) {
                 if (current == head) {
                     pop_head();
-                    current = head; 
+                    current = head;
                 }
                 else {
                     previous->next = current->next;
                     if (current == tail) {
-                        tail = previous; 
+                        tail = previous;
                     }
                     delete current;
-                    current = previous->next; 
+                    current = previous->next;
                     size--;
                 }
             }
@@ -170,19 +172,7 @@ public:
         }
     }
 
-    // Метод для добавления жильца в квартиру по номеру
-    void add(int apartmentNumber, const T& tenantName) {
-        Node<T>* current = head;
-        while (current != nullptr) {
-            if (current->apartmentNumber == apartmentNumber) {
-                current->tenantName = tenantName; // Обновляем имя арендатора
-                return;
-            }
-            current = current->next;
-        }
-        // Если квартира не найдена, выбрасываем исключение
-        throw std::runtime_error("Apartment not found");
-    }
+  
 
     // Операция доступа по индексу - чтение
     const T& operator[](size_t index) const {
@@ -229,33 +219,23 @@ public:
         }
         os << "nullptr";
         return os;
-    }    
+    }
 };
 
 int main() {
-    ApartmentList<std::string> apartments(5, 101, 202,42);
-    ApartmentList<std::string> apar(5, 303, 404,42);
+    ApartmentList<std::string> apartments;
+    ApartmentList<std::string> apar;
+   
+
+    apartments.push_tail(6, "a");
+    apartments.push_tail(9, "aa");
     std::cout << apartments << std::endl;
+    apar.push_tail(99, "c");
+    apar.push_head(8, "d");
     std::cout << apar << std::endl;
-    
-    apartments.push_tail(6, "NewTenant");
-    apartments.add(1, "staryy");
-    std::cout << apartments << std::endl;
 
-    apartments.push_head(0, "FirstTenant");
+    apartments.push_head(apar);
     std::cout << apartments << std::endl;
-
-    apartments.pop_head();
-    std::cout << apartments << std::endl;
-
-    apartments.pop_tail();
-    std::cout << apartments << std::endl;
-    
-    std::cout << apartments << std::endl;
-   apartments.delete_node("staryy");
-    std::cout << apartments << std::endl;
-
-    std::cout << "Current size: " << apartments.get_size() << std::endl;
 
     return 0;
 }
